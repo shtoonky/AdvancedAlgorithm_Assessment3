@@ -4,6 +4,7 @@ Hannah Effat Manesh Nik
 25809221
 */
 #include "rabin_karp.hpp"
+#include "text_generator.cpp"
 
 vector<int> rabin_karp(const string &pattern, const string &text, int q){
 
@@ -31,7 +32,7 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
         p = (d * p + pattern[i]) % q;
         t = (d * t + text[i]) % q;
     }
-    
+
     // Slide pattern over text by one, finishing at the last possible starting position
     for (int i = 0; i <= n - m; i++){
         
@@ -118,13 +119,15 @@ int random_prime(int min_prime, int max_prime){
 int main(){ // TEMPORARY: Will be removed later when benchmarking happens and both algorithms are used together
     string txt = "bananabanana";
     string pat = "banana";
+
     int q = random_prime(10000, 100000);  // Prime no. for modulo operations -> This is where the randomised component comes from
+    
     vector<int> res = rabin_karp(pat, txt, q); 
     for (auto it : res){
         cout << it << " ";
     }
     cout << '\n';
-    
+
     cin.get();
     return 0;
 }
