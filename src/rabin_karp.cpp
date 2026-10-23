@@ -3,7 +3,7 @@ Rabin-Karp Algorithm
 Hannah Effat Manesh Nik
 25809221
 */
-#include "include/rabin_karp.hpp"
+#include "rabin_karp.hpp"
 
 vector<int> rabin_karp(const string &pattern, const string &text, int q){
 
@@ -31,7 +31,7 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
         p = (d * p + pattern[i]) % q;
         t = (d * t + text[i]) % q;
     }
-
+    
     // Slide pattern over text by one, finishing at the last possible starting position
     for (int i = 0; i <= n - m; i++){
         
@@ -51,10 +51,12 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
         }
 
         if (i < n - m){ // Calculate the hash of the next windows without hashing all characters again
-            t = (d * (t - text[i] * h) + text[i + m]) % q;
+            long long next_hash = (d * (t - text[i] * h) + text[i + m]) % q;
 
-            if (t < 0) // Basically converts a negative hash to the positive equivalent
-                t += q;
+            if (next_hash < 0) // Basically converts a negative hash to the positive equivalent
+                next_hash += q;
+
+            t = static_cast<int>(next_hash);
         }
     }
 
