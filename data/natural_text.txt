@@ -1,0 +1,1 @@
+String searching algorithms are used to locate patterns within larger bodies of text. Different algorithms can perform differently depending on the structure of the input and the length of the pattern being searched for.

@@ -3,14 +3,18 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
 #include <random>
 #include <algorithm>
 
-using namespace std;
+// Record for output.
+struct RabinKarpStats{
+    int hash_matches = 0;
+    int false_positives = 0;
+    int q = 0;
+};
 
-vector<int> rabin_karp(const string& pattern, const string& text, int q);
+std::vector<int> rabin_karp(const std::string& pattern, const std::string& text, int q, RabinKarpStats* stats = nullptr);
 
-int random_prime(int min_prime, int max_prime);
+int random_prime(int min_prime, int max_prime, std::mt19937& modulus_rng);
 
 #endif

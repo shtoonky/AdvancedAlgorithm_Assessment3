@@ -3,13 +3,21 @@ Rabin-Karp Algorithm
 Hannah Effat Manesh Nik
 25809221
 */
-#include "rabin_karp.hpp"
-#include "text_generator.cpp"
+#include <stdexcept>
 
-vector<int> rabin_karp(const string &pattern, const string &text, int q){
+#include "rabin_karp.hpp"
+
+std::vector<int> rabin_karp(const std::string &pattern, const std::string &text, int q, RabinKarpStats* stats){
 
     if (pattern.empty() || pattern.length() > text.length())
         return {-1};
+
+
+    if (stats){    
+        stats->q = q;
+        stats->hash_matches = 0;
+        stats->false_positives = 0;
+    }
 
     int d = 256; // No. of chars in input alphabet - assumed ASCII
 
@@ -21,7 +29,7 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
 
     int h = 1; // Highest position multiplier -> stores d^(m-1) to let the algo remove outgoing characters
 
-    vector<int> ans;
+    std::vector<int> ans;
 
     // Precompute h 
     for (int i = 0; i < m - 1; i++)
@@ -38,6 +46,9 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
         
         // If hash values match, check characters
         if (p == t){
+            if (stats)
+                stats->hash_matches++;
+
             bool match = true;
             
             for (int j = 0; j < m; j ++){ // We must manually check in case of a hash collision
@@ -47,8 +58,13 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
                 }
             }
 
-            if (match)
+            if (match){
                 ans.push_back(i);
+            }
+            else {
+                if (stats)
+                    stats->false_positives++;
+            }
         }
 
         if (i < n - m){ // Calculate the hash of the next windows without hashing all characters again
@@ -67,8 +83,8 @@ vector<int> rabin_karp(const string &pattern, const string &text, int q){
 // Functions to generate and select a random prime number within a range 
 // to use as the modulus for hashing
 
-vector<int> generate_primes(int limit){
-    vector<bool> is_prime(limit + 1, true);
+std::vector<int> generate_primes(int limit){
+    std::vector<bool> is_prime(limit + 1, true);
 
     is_prime[0] = is_prime[1] = false;
 
@@ -80,7 +96,7 @@ vector<int> generate_primes(int limit){
         }
     }
 
-    vector<int> primes;
+    std::vector<int> primes;
 
     for (int i = 2; i <= limit; i++){
         if (is_prime[i]){
@@ -91,43 +107,23 @@ vector<int> generate_primes(int limit){
     return primes;
 }
 
-const vector<int>& get_primes() {
-    static const vector<int> primes = generate_primes(100000); // Only get primes in range once
+const std::vector<int>& get_primes() {
+    static const std::vector<int> primes = generate_primes(100000); // Only get primes in range once
     return primes;
 }
 
-int random_prime(int min_prime, int max_prime){
-    static mt19937 rng(random_device{}());
+int random_prime(int min_prime, int max_prime, std::mt19937& rng){
 
-    const vector<int>& primes = get_primes();
+    const std::vector<int>& primes = get_primes();
 
-    auto first = lower_bound(primes.begin(), primes.end(), min_prime); // find the first prime >= to min_prime
-    auto last = upper_bound(primes.begin(), primes.end(), max_prime); // find the first prime strictly > than max+prime
+    auto first = std::lower_bound(primes.begin(), primes.end(), min_prime); // find the first prime >= to min_prime
+    auto last = std::upper_bound(primes.begin(), primes.end(), max_prime); // find the first prime strictly > than max+prime
 
     if (first == last){
-        throw invalid_argument("No primes in specified range.");
+        throw std::invalid_argument("No primes in specified range.");
     }
 
-    uniform_int_distribution<int> dist(0, static_cast<int>(last - first) - 1);
+    std::uniform_int_distribution<int> dist(0, static_cast<int>(last - first) - 1);
 
     return *(first + dist(rng));
-}
-
-// using g++ version 15.20
-// build with g++ -std=c++20 src/rabin_karp.cpp -o main.exe
-// prints the elemnts of a vector of indices where matches occur
-int main(){ // TEMPORARY: Will be removed later when benchmarking happens and both algorithms are used together
-    string txt = "bananabanana";
-    string pat = "banana";
-
-    int q = random_prime(10000, 100000);  // Prime no. for modulo operations -> This is where the randomised component comes from
-    
-    vector<int> res = rabin_karp(pat, txt, q); 
-    for (auto it : res){
-        cout << it << " ";
-    }
-    cout << '\n';
-
-    cin.get();
-    return 0;
 }
