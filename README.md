@@ -5,6 +5,5 @@
 
 # Build Instructions
 
-(Temporary until benchmarking is implemented)
-Compile project from root directory using:
-  g++ -std=c++20 -Iinclude src/rabin_karp.cpp -o main.exe
+From root directory:
+> g++ -std=c++20 -Iinclude src/benchmark.cpp src/rabin_karp.cpp src/text_generator.cpp -o main.exe
