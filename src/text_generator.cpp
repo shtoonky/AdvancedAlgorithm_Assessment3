@@ -108,8 +108,6 @@ std::string generate_repeated_patterns(const std::string& text, std::size_t patt
 
         while ((pos = text.find(pattern, pos)) != std::string::npos) {
             ++count;
-
-            // Advance by one to count overlapping occurrences too.
             ++pos;
         }
 
