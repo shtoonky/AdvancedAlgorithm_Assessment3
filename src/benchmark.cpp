@@ -267,14 +267,27 @@ int main(){
         }
     };
 
+    const static int q = random_prime(10000, 100000, modulus_rng);
+
+    // Warm Up (not timed.)
+    Scenario warm_up_scenario {
+        .name = "warm_up",
+        .experiment = Experiment::PatternLength
+    };
+    TestInput input = generate_test_input(warm_up_scenario, input_rng);
+
+    rabin_karp(input.pattern, input.text, q); // Run KMP too
+
+
+    // Standard Experiments
+
+    
 
     for (const Scenario& scenario : scenarios) {
 
         for (int trial = 0; trial < 30; ++ trial) {
             
             TestInput input = generate_test_input(scenario, input_rng);
-
-            int q = random_prime(10000, 100000, modulus_rng);
 
             // Benchmark Rabin-Karp
             RunResult rk = benchmark_rabin_karp(scenario, input, trial, q, input_seed, modulus_seed);

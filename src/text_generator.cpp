@@ -44,17 +44,30 @@ std::string generate_random(std::size_t length, const std::string& alphabet, std
     return output;
 }
 
-
 // Returns a substring of text of size length at a random index.
 std::string generate_pattern(const std::string& text, std::size_t length, std::mt19937& rng){
     if (length == 0 || length > text.size()){
         throw std::invalid_argument("Invalid pattern length");
     }
 
+    constexpr std::size_t max_attempts = 10000;
+
     std::uniform_int_distribution<std::size_t> distrib(0, text.size() - length);
 
-    std::size_t start = distrib(rng);
-    return text.substr(start, length);
+    for (std::size_t attempt = 0; attempt < max_attempts; ++attempt){
+
+        std::size_t start = distrib(rng);
+
+        size_t occurrences = text.find(start);
+
+        if (occurrences == std::string::npos || occurrences > 1){
+            continue;
+        }
+        
+        return text.substr(start, length);
+    }
+
+    throw std::runtime_error("Could not generate an single occurence pattern");
 }
 
 // Returns a string of size length comprised of letter from alphabet and is NOT present in the given text.
