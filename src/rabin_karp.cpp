@@ -4,17 +4,21 @@ Hannah Effat Manesh Nik
 25809221
 */
 #include <stdexcept>
+#include <algorithm>
+
 
 #include "rabin_karp.hpp"
 
 std::vector<int> rabin_karp(const std::string &pattern, const std::string &text, int q, RabinKarpStats* stats){
 
     if (pattern.empty() || pattern.length() > text.length())
-        return {-1};
+        return {};
+
+    if (q <= 1) 
+        throw std::invalid_argument("Modulus must be greater than 1.");
 
 
     if (stats){    
-        stats->q = q;
         stats->hash_matches = 0;
         stats->false_positives = 0;
     }
@@ -68,7 +72,7 @@ std::vector<int> rabin_karp(const std::string &pattern, const std::string &text,
         }
 
         if (i < n - m){ // Calculate the hash of the next windows without hashing all characters again
-            long long next_hash = (d * (t - text[i] * h) + text[i + m]) % q;
+            long long next_hash = (static_cast<long long>(d) * (t - static_cast<long long>(text[i] * h)) + text[i + m]) % q;
 
             if (next_hash < 0) // Basically converts a negative hash to the positive equivalent
                 next_hash += q;
@@ -117,7 +121,7 @@ int random_prime(int min_prime, int max_prime, std::mt19937& rng){
     const std::vector<int>& primes = get_primes();
 
     auto first = std::lower_bound(primes.begin(), primes.end(), min_prime); // find the first prime >= to min_prime
-    auto last = std::upper_bound(primes.begin(), primes.end(), max_prime); // find the first prime strictly > than max+prime
+    auto last = std::upper_bound(primes.begin(), primes.end(), max_prime); // find the first prime strictly > than max_prime
 
     if (first == last){
         throw std::invalid_argument("No primes in specified range.");

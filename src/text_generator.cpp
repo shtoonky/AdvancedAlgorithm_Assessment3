@@ -59,66 +59,56 @@ std::string generate_pattern(const std::string& text, std::size_t length, std::m
 
 // Returns a string of size length comprised of letter from alphabet and is NOT present in the given text.
 std::string generate_absent_pattern(const std::string& text, std::size_t length, const std::string& alphabet, std::mt19937& rng){
-    while (true){
-        std::string pattern = generate_random(length, alphabet, rng);
 
-        if (text.find(pattern) == std::string::npos){
-            return pattern;
-        }
-    }
-}
-
-// Returns a string of text from a file.
-std::string load_natural_text(const std::string& filename){
-    std::ifstream input(filename);
-
-    if (!input)
-        throw std::runtime_error("Could not open text file " + filename);
-
-    std::ostringstream buffer;
-    buffer << input.rdbuf();
-
-    std::string text = buffer.str();
-
-    if (text.empty()) {
-        throw std::runtime_error("Text file is empty: " + filename);
-    }
-
-    return text;
-}
-
-// Potentially find a repeated pattern within a text of size pattern_length which can be found in the text at least min_occurences times.
-std::string generate_repeated_patterns(const std::string& text, std::size_t pattern_length, std::size_t min_occurrences, std::mt19937& rng) {
-    if (pattern_length == 0 || pattern_length > text.size())
-        throw std::invalid_argument("Invalid pattern length");
-    
-    if (min_occurrences == 0)
-        throw std::invalid_argument("Minimum occurences must be possible");
-
-    std::uniform_int_distribution<size_t> dist(0, text.size() - pattern_length);
+    if (length == 0 || alphabet.empty())
+        throw std::invalid_argument("Invalid pattern length or alphabet");
 
     constexpr std::size_t max_attempts = 10000;
 
     for (std::size_t attempt = 0; attempt < max_attempts; ++attempt){
-        std::size_t start = dist(rng);
-        std::string pattern = text.substr(start, pattern_length);
 
-        size_t count = 0;
-        size_t pos = 0;
+        std::string pattern = generate_random(length, alphabet, rng);
 
-        while ((pos = text.find(pattern, pos)) != std::string::npos) {
-            ++count;
-            ++pos;
-        }
-
-        if (count >= min_occurrences) {
-            return pattern;
+        if (text.find(pattern) == std::string::npos){
+            return pattern;        
         }
     }
 
-    throw std::runtime_error(
-        "Could not find a pattern with the required number of occurrences"
-    );
-
-    return "";
+    throw std::runtime_error("Could not generate an absent pattern");
 }
+
+// Potentially find a repeated pattern within a text of size pattern_length which can be found in the text at least min_occurences times.
+// std::string generate_repeated_patterns(const std::string& text, std::size_t pattern_length, std::size_t min_occurrences, std::mt19937& rng) {
+//     if (pattern_length == 0 || pattern_length > text.size())
+//         throw std::invalid_argument("Invalid pattern length");
+    
+//     if (min_occurrences == 0)
+//         throw std::invalid_argument("Minimum occurrences must be possible");
+
+//     std::uniform_int_distribution<size_t> dist(0, text.size() - pattern_length);
+
+//     constexpr std::size_t max_attempts = 10000;
+
+//     for (std::size_t attempt = 0; attempt < max_attempts; ++attempt){
+//         std::size_t start = dist(rng);
+//         std::string pattern = text.substr(start, pattern_length);
+
+//         size_t count = 0;
+//         size_t pos = 0;
+
+//         while ((pos = text.find(pattern, pos)) != std::string::npos) {
+//             ++count;
+//             ++pos;
+//         }
+
+//         if (count >= min_occurrences) {
+//             return pattern;
+//         }
+//     }
+
+//     // throw std::runtime_error("Could not generate an absent pattern");
+
+//     std::string empty = "";
+//     return empty;
+// }
+

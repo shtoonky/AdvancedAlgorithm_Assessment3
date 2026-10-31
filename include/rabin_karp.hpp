@@ -4,13 +4,11 @@
 #include <vector>
 #include <string>
 #include <random>
-#include <algorithm>
 
 // Record for output.
 struct RabinKarpStats{
     int hash_matches = 0;
     int false_positives = 0;
-    int q = 0;
 };
 
 std::vector<int> rabin_karp(const std::string& pattern, const std::string& text, int q, RabinKarpStats* stats = nullptr);

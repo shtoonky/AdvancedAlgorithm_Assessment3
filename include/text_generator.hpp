@@ -13,8 +13,6 @@ std::string generate_pattern(const std::string& text, std::size_t length, std::m
 
 std::string generate_absent_pattern(const std::string& text, std::size_t length, const std::string& alphabet, std::mt19937& rng);
 
-std::string load_natural_text(const std::string& filename);
-
-std::string generate_repeated_patterns(const std::string& text, std::size_t pattern_length, std::size_t min_occurrences, std::mt19937& rng);
+// std::string generate_repeated_patterns(const std::string& text, std::size_t pattern_length, std::size_t min_occurrences, std::mt19937& rng);
 
 #endif
