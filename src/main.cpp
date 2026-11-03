@@ -124,6 +124,17 @@ int main(){
             RunResult rk = benchmark_rabin_karp(scenario, input, trial, q, input_seed, modulus_seed);
             RunResult kmp = benchmark_kmp(scenario, input, trial, input_seed, modulus_seed);
 
+            // Check they're the same
+            std::vector<int> rk_matches = rabin_karp(input.pattern, input.text, q);
+            std::vector<int> kmp_matches = kmp_search(input.pattern, input.text);
+
+            if (rk_matches != kmp_matches) {
+                std::cerr << "Algorithms returned different results\n";
+                std::cerr << "Scenario: " << scenario.name << '\n';
+                std::cerr << "Trial: " << trial << '\n';
+                return -1;
+            }
+
             // Write results to CSV
             write_result(output, rk);
             write_result(output, kmp);
