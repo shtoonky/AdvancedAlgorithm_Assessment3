@@ -41,8 +41,8 @@ std::vector<int> rabin_karp(const std::string &pattern, const std::string &text,
 
     // Compute initial hash values for pattern and first window of text
     for (int i = 0; i < m; i++) {
-        p = (d * p + pattern[i]) % q;
-        t = (d * t + text[i]) % q;
+        p = (static_cast<long long>(d) * p + pattern[i]) % q;
+        t = (static_cast<long long>(d) * t + text[i]) % q;
     }
 
     // Slide pattern over text by one, finishing at the last possible starting position

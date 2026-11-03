@@ -54,13 +54,19 @@ std::string generate_pattern(const std::string& text, std::size_t length, std::m
 
         std::size_t start = distrib(rng);
 
-        size_t occurrences = text.find(start);
+        std::string pattern = text.substr(start, length);
 
-        if (occurrences == std::string::npos || occurrences > 1){
+        size_t first = text.find(pattern);
+
+        if (first == std::string::npos){
             continue;
         }
 
-        return text.substr(start, length);
+        std::size_t second = text.find(pattern, first + 1);
+
+        if (second == std::string::npos){
+            return pattern;
+        }
     }
 
     throw std::runtime_error("Could not generate an single occurence pattern");

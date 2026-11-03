@@ -86,16 +86,19 @@ int main(){
         {
             .name = "low_repetition",
             .experiment = Experiment::PatternRepetition,
+            .pattern_length = 20
         },
         {
             .name = "high_repetition",
             .experiment = Experiment::PatternRepetition,
-            .pattern_structure = PatternStructure::Alternating
+            .pattern_length = 20,
+            .pattern_structure = PatternStructure::Alternating,
         },
         {
             .name = "extreme_repetition",
             .experiment = Experiment::PatternRepetition,
-            .pattern_structure = PatternStructure::RepeatedCharacter
+            .pattern_length = 20,
+            .pattern_structure = PatternStructure::RepeatedCharacter,
         }
     };
 
