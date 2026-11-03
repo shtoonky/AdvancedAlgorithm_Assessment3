@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <random>
 
+#include "kmp.hpp"
 #include "rabin_karp.hpp"
 #include "text_generator.hpp"
 #include "benchmarp.hpp"
@@ -74,6 +75,36 @@ RunResult benchmark_rabin_karp(const Scenario& scenario, const TestInput& input,
     };
 
     return rabin_karp_record;
+}
+
+// Benchmark KMP on the same generated input used for Rabin-Karp.
+// kmp_search builds the LPS table, so preprocessing is included in timing.
+RunResult benchmark_kmp(const Scenario& scenario, const TestInput& input,
+                        int trial, unsigned int input_seed,
+                        unsigned int modulus_seed) {
+    const auto start = std::chrono::steady_clock::now();
+    const std::vector<int> matches = kmp_search(input.pattern, input.text);
+    const auto end = std::chrono::steady_clock::now();
+
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    return RunResult{
+        .scenario_name = scenario.name,
+        .experiment = scenario.experiment,
+        .trial = trial,
+        .algorithm = "KMP",
+        .text_length = static_cast<int>(input.text.size()),
+        .pattern_length = static_cast<int>(input.pattern.size()),
+        .alphabet_size = scenario.alphabet_size,
+        .time_us = duration,
+        .matches = static_cast<int>(matches.size()),
+        .pattern_structure = scenario.pattern_structure,
+        .input_seed = input_seed,
+        .modulus_seed = modulus_seed,
+        .hash_matches = -1,   // Not applicable to KMP.
+        .false_positives = -1,
+        .q = -1
+    };
 }
 
 std::string experiment_to_string(Experiment experiment){

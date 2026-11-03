@@ -3,8 +3,11 @@
 
 #include <string>
 #include <chrono>
+#include <fstream>
+#include <random>
 
-enum class Experiment {
+enum class Experiment
+{
     TextLength,
     PatternLength,
     AlphabetSize,
@@ -12,13 +15,15 @@ enum class Experiment {
     Modulus
 };
 
-enum class PatternStructure {
+enum class PatternStructure
+{
     Random,
     Alternating,
     RepeatedCharacter
 };
 
-struct Scenario{
+struct Scenario
+{
     std::string name;
     Experiment experiment;
 
@@ -28,7 +33,8 @@ struct Scenario{
     PatternStructure pattern_structure{PatternStructure::Random};
 };
 
-struct RunResult{
+struct RunResult
+{
     std::string scenario_name;
     Experiment experiment;
 
@@ -52,16 +58,24 @@ struct RunResult{
     int q{-1};
 };
 
-struct TestInput {
+struct TestInput
+{
     std::string text;
     std::string pattern;
     std::string alphabet;
 };
 
-TestInput generate_test_input(const Scenario& scenario, std::mt19937& input_rng);
+TestInput generate_test_input(const Scenario &scenario, std::mt19937 &input_rng);
 
-RunResult benchmark_rabin_karp(const Scenario& scenario, const TestInput& input, int trial, int q, unsigned int input_seed, unsigned int modulus_seed);
+RunResult benchmark_rabin_karp(const Scenario &scenario, const TestInput &input, int trial, int q, unsigned int input_seed, unsigned int modulus_seed);
 
-void write_result(std::ofstream& output, const RunResult& result);
+RunResult benchmark_kmp(
+    const Scenario &scenario,
+    const TestInput &input,
+    int trial,
+    unsigned int input_seed,
+    unsigned int modulus_seed);
+
+void write_result(std::ofstream &output, const RunResult &result);
 
 #endif
