@@ -1,4 +1,4 @@
-// build with: g++ -std=c++20 -Iinclude src/benchmark.cpp src/rabin_karp.cpp src/text_generator.cpp src/main.cpp -o main.exe
+// build with: g++ -std=c++20 -Iinclude src/benchmark.cpp src/rabin_karp.cpp src/kmp.cpp src/text_generator.cpp src/main.cpp -o main.exe
 
 #include <chrono>
 #include <fstream>
@@ -11,6 +11,7 @@
 #include "benchmarp.hpp"
 #include "text_generator.hpp"
 #include "rabin_karp.hpp"
+#include "kmp.hpp"
 
 int main(){
     std::ofstream output("results/benchmark_results_raw.csv");
@@ -108,7 +109,8 @@ int main(){
     TestInput input = generate_test_input(warm_up_scenario, input_rng);
 
     rabin_karp(input.pattern, input.text, q); // Run KMP too
-
+    
+    kmp_search(input.pattern, input.text);
 
     // Standard Experiments
 
@@ -120,9 +122,11 @@ int main(){
 
             // Benchmark Rabin-Karp
             RunResult rk = benchmark_rabin_karp(scenario, input, trial, q, input_seed, modulus_seed);
+            RunResult kmp = benchmark_kmp(scenario, input, trial, input_seed, modulus_seed);
 
+            // Write results to CSV
             write_result(output, rk);
-
+            write_result(output, kmp);
         }
     }
 
