@@ -31,3 +31,46 @@ std::vector<int> build_lps(const std::string &pattern)
 
     return lps;
 }
+
+std::vector<int> kmp_search(const std::string &pattern,
+                            const std::string &text)
+{
+    std::vector<int> matches;
+    const int m = static_cast<int>(pattern.size());
+    const int n = static_cast<int>(text.size());
+
+    if (m == 0 || m > n)
+    {
+        return matches;
+    }
+
+    const std::vector<int> lps = build_lps(pattern);
+    int i = 0; // current text position
+    int j = 0; // no. of pattern characters matched
+
+    while (i < n)
+    {
+        if (text[i] == pattern[j])
+        {
+            ++i;
+            ++j;
+
+            if (j == m)
+            {
+                matches.push_back(i - m);
+
+                j = lps[j - 1];
+            }
+        }
+        else if (j > 0)
+        {
+            j = lps[j - 1];
+        }
+        else
+        {
+            ++i;
+        }
+    }
+
+    return matches;
+}
